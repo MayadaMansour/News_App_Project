@@ -4,7 +4,7 @@ class SourcesNewsModel {
   String? status;
   String? code;
   String? message;
-  List<Sources>? sources;
+  List<Source>? sources;
 
   SourcesNewsModel({this.status, this.sources, this.code, this.message});
 
@@ -13,9 +13,9 @@ class SourcesNewsModel {
     code = json['code'];
     message = json['message'];
     if (json['sources'] != null) {
-      sources = <Sources>[];
+      sources = <Source>[];
       json['sources'].forEach((v) {
-        sources!.add(Sources.fromJson(v));
+        sources!.add(Source.fromJson(v));
       });
     }
   }
@@ -32,7 +32,7 @@ class SourcesNewsModel {
   }
 }
 
-class Sources {
+class Source {
   String? id;
   String? name;
   String? description;
@@ -41,7 +41,7 @@ class Sources {
   String? language;
   String? country;
 
-  Sources(
+  Source(
       {this.id,
       this.name,
       this.description,
@@ -50,7 +50,7 @@ class Sources {
       this.language,
       this.country});
 
-  Sources.fromJson(Map<String, dynamic> json) {
+  Source.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:news_app_project/core/model/SourcesNews.dart';
 import 'package:news_app_project/core/network/api_manage.dart';
+import 'package:news_app_project/ui/new_screen/tab_widget/tabs_widget.dart';
 import 'package:news_app_project/utils/color_resource/color_resources.dart';
 
-class NewsScreen extends StatelessWidget {
+class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
 
   static const String routeName = "News_Screen";
 
+  @override
+  State<NewsScreen> createState() => _NewsScreenState();
+}
+
+class _NewsScreenState extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -45,7 +51,8 @@ class NewsScreen extends StatelessWidget {
                     Text("Something went wrong"),
                     ElevatedButton(
                       onPressed: () {
-                        // Trigger a retry
+                        ApiManager.getSources();
+                        setState(() {});
                       },
                       child: Text("Try Again"),
                     ),
@@ -58,7 +65,8 @@ class NewsScreen extends StatelessWidget {
                     Text(snapshot.data?.message ?? "Unknown error"),
                     ElevatedButton(
                       onPressed: () {
-                        // Trigger a retry
+                        ApiManager.getSources();
+                        setState(() {});
                       },
                       child: Text("Try Again"),
                     ),
@@ -67,12 +75,7 @@ class NewsScreen extends StatelessWidget {
               }
 
               var sourcesList = snapshot.data!.sources;
-              return ListView.builder(
-                itemBuilder: (context, index) {
-                  return Text(sourcesList[index].name!);
-                },
-                itemCount: sourcesList!.length,
-              );
+              return TabsWidget(sourcesList: sourcesList!);
             },
           ),
         ),
