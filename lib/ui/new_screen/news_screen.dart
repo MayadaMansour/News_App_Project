@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:news_app_project/core/model/SourcesNews.dart';
-import 'package:news_app_project/core/network/api_manage.dart';
-import 'package:news_app_project/ui/new_screen/tab_widget/tabs_widget.dart';
+import 'package:news_app_project/core/model/category_model.dart';
+import 'package:news_app_project/ui/category/category_details.dart';
+import 'package:news_app_project/ui/category/category_fregment.dart';
+import 'package:news_app_project/ui/new_screen/drawer_screen.dart';
 import 'package:news_app_project/utils/color_resource/color_resources.dart';
+
+import '../setting/setting_screen.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -14,6 +17,9 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
+  CategoryModel? selectCategory;
+  int selectItemMenu = DrawerScreen.categories;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -29,57 +35,61 @@ class _NewsScreenState extends State<NewsScreen> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
+          drawer: Drawer(
+            backgroundColor: ColorResources.white,
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: DrawerScreen(
+              onSideMenuClick: onSideMenuItem,
+            ),
+          ),
           appBar: AppBar(
             centerTitle: true,
             title: Text(
-              "News App",
+              selectItemMenu == DrawerScreen.setting
+                  ? "Setting"
+                  : selectCategory == null
+                      ? "News App"
+                      : selectCategory!.title,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
-          body: FutureBuilder<SourcesNewsModel?>(
-            future: ApiManager.getSources(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: ColorResources.primaryColor,
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Column(
-                  children: [
-                    Text("Something went wrong"),
-                    ElevatedButton(
-                      onPressed: () {
-                        ApiManager.getSources();
-                        setState(() {});
-                      },
-                      child: Text("Try Again"),
+          body: selectItemMenu == DrawerScreen.setting
+              ? const SettingScreen()
+              : selectCategory == null
+                  ? CategoryFragment(
+                      onClickCategoryItem: onCategoryItemClick,
+                    )
+                  : CategoryDetails(
+                      categoryModel: selectCategory!,
                     ),
-                  ],
-                );
-              } else if (snapshot.data == null ||
-                  snapshot.data!.status != "ok") {
-                return Column(
-                  children: [
-                    Text(snapshot.data?.message ?? "Unknown error"),
-                    ElevatedButton(
-                      onPressed: () {
-                        ApiManager.getSources();
-                        setState(() {});
-                      },
-                      child: Text("Try Again"),
-                    ),
-                  ],
-                );
-              }
-
-              var sourcesList = snapshot.data!.sources;
-              return TabsWidget(sourcesList: sourcesList!);
-            },
-          ),
         ),
       ],
     );
+  }
+
+  void onCategoryItemClick(CategoryModel newCategory) {
+    setState(() {
+      selectCategory = newCategory;
+    });
+
+    if (selectCategory != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CategoryDetails(
+            categoryModel: selectCategory!,
+          ),
+        ),
+      );
+    }
+  }
+
+  void onSideMenuItem(int newSideMenu) {
+    setState(() {
+      selectItemMenu = newSideMenu;
+      selectCategory = null;
+    });
+
+    Navigator.pop(context);
   }
 }

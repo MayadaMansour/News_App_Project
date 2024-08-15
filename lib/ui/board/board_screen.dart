@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import '../category/category_screen.dart';
+import 'package:news_app_project/ui/new_screen/news_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Timer(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => CategoryScreen()));
+          context, MaterialPageRoute(builder: (context) => NewsScreen()));
     });
     super.initState();
   }

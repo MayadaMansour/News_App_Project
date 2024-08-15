@@ -71,56 +71,64 @@ class _NewsWidgetState extends State<NewsWidget> {
             final imageUrl = article.urlToImage;
 
             return GestureDetector(
-
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NewDetails(news: article),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewDetails(news: newsList[index]),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: imageUrl != null && imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.broken_image,
+                                    size: 100);
+                              },
+                            )
+                          : const Icon(Icons.broken_image, size: 100),
                     ),
-                  );
-                },
-
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  imageUrl != null && imageUrl.isNotEmpty
-                      ? Image.network(
-                          imageUrl,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.broken_image, size: 100);
-                          },
-                        )
-                      : const Icon(Icons.broken_image, size: 100),
-                  Text(
-                    article.title ?? 'No Title',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(fontSize: 18),
-                  ),
-                  Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(article.author ?? 'Unknown Author',
-                            maxLines: 3,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: Colors.grey, fontSize: 16)),
-                      ),
-                      Spacer(),
-                      Expanded(
-                        child: Text(article.publishedAt ?? ' ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: Colors.grey, fontSize: 16)),
-                      ),
-                    ],
-                  ),
-                ],
+                    Text(
+                      article.title ?? 'No Title',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(fontSize: 18),
+                    ),
+                    Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(article.author ?? 'Unknown Author',
+                              maxLines: 3,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: Colors.grey, fontSize: 16)),
+                        ),
+                        Spacer(),
+                        Expanded(
+                          child: Text(article.publishedAt ?? ' ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: Colors.grey, fontSize: 16)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           },

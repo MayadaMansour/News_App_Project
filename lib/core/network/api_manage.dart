@@ -6,9 +6,9 @@ import 'package:news_app_project/core/model/SourcesNews.dart';
 import 'package:news_app_project/core/network/constants.dart';
 
 class ApiManager {
-  static Future<SourcesNewsModel?> getSources() async {
+  static Future<SourcesNewsModel?> getSources(String categoryId) async {
     Uri url = Uri.https(ApiConstants.baseUrl, ApiConstants.sources,
-        {"apiKey": "7fee4affb2224ab8afe396526a9a24f5"});
+        {"apiKey": "7fee4affb2224ab8afe396526a9a24f5", "category": categoryId});
 
     try {
       var response = await http.get(url);
@@ -29,7 +29,8 @@ class ApiManager {
     try {
       var response = await http.get(url);
       if (response.statusCode == 200) {
-        return NewsResponse.fromJson(jsonDecode(response.body)); // Return the NewsResponse object
+        return NewsResponse.fromJson(
+            jsonDecode(response.body)); // Return the NewsResponse object
       } else {
         throw Exception('Failed to load news');
       }
@@ -38,4 +39,3 @@ class ApiManager {
     }
   }
 }
-
