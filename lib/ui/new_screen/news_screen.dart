@@ -1,3 +1,5 @@
+import 'package:animated_search_bar/animated_search_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app_project/core/model/category_model.dart';
 import 'package:news_app_project/ui/category/category_details.dart';
@@ -17,8 +19,11 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  CategoryModel? selectCategory;
-  int selectItemMenu = DrawerScreen.categories;
+  CategoryModel? selectedCategory;
+  int selectedItemMenu = DrawerScreen.categories;
+  String searchText = '';
+  final TextEditingController _controller = TextEditingController(text: '');
+  bool showSearchResults = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,23 +49,81 @@ class _NewsScreenState extends State<NewsScreen> {
           ),
           appBar: AppBar(
             centerTitle: true,
-            title: Text(
-              selectItemMenu == DrawerScreen.setting
+            title: AnimatedSearchBar(
+              labelAlignment: Alignment.center,
+              closeIcon: IconButton(
+                onPressed: () {
+                  _controller.clear();
+                  showSearchResults = false;
+                  setState(() {});
+                },
+                icon: const Icon(Icons.clear),
+              ),
+              label: selectedItemMenu == DrawerScreen.setting
                   ? "Setting"
-                  : selectCategory == null
+                  : selectedCategory == null
                       ? "News App"
-                      : selectCategory!.title,
-              style: Theme.of(context).textTheme.bodyLarge,
+                      : selectedCategory!.title,
+              controller: _controller,
+              searchIcon: Icon(
+                color: ColorResources.white,
+                CupertinoIcons.search,
+                size: 25,
+              ),
+              labelStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+              searchStyle: const TextStyle(color: Colors.black38),
+              labelTextAlign: TextAlign.start,
+              cursorColor: Colors.white,
+              height: 40,
+              textInputAction: TextInputAction.done,
+              searchDecoration: const InputDecoration(
+                filled: true,
+                hintText: '  Search...',
+                alignLabelWithHint: true,
+                fillColor: Colors.white,
+                hintStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(45)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                  borderRadius: BorderRadius.all(Radius.circular(45)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(45)),
+                  borderSide: BorderSide(width: 1.0, color: Colors.grey),
+                ),
+              ),
+              onChanged: (value) {
+                searchText = value.toUpperCase();
+                // ApiManager.getNewsBySourceId(widget.source.id ?? " ",
+                //     widget.search.articles?.join(',') ?? "");
+                showSearchResults = true;
+                setState(() {});
+              },
+              onClose: () {
+                _controller.clear();
+                showSearchResults = false;
+                setState(() {});
+              },
+              onFieldSubmitted: (value) {
+                searchText = value;
+                setState(() {});
+              },
             ),
           ),
-          body: selectItemMenu == DrawerScreen.setting
+          body: selectedItemMenu == DrawerScreen.setting
               ? const SettingScreen()
-              : selectCategory == null
+              : selectedCategory == null
                   ? CategoryFragment(
                       onClickCategoryItem: onCategoryItemClick,
                     )
                   : CategoryDetails(
-                      categoryModel: selectCategory!,
+                      categoryModel: selectedCategory!,
                     ),
         ),
       ],
@@ -69,27 +132,17 @@ class _NewsScreenState extends State<NewsScreen> {
 
   void onCategoryItemClick(CategoryModel newCategory) {
     setState(() {
-      selectCategory = newCategory;
+      selectedCategory = newCategory;
+      selectedItemMenu = DrawerScreen.categories;
     });
-
-    if (selectCategory != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CategoryDetails(
-            categoryModel: selectCategory!,
-          ),
-        ),
-      );
-    }
   }
 
   void onSideMenuItem(int newSideMenu) {
     setState(() {
-      selectItemMenu = newSideMenu;
-      selectCategory = null;
+      selectedItemMenu = newSideMenu;
+      selectedCategory = null;
     });
 
-    Navigator.pop(context);
+    Navigator.pop(context); // Close the drawer
   }
 }

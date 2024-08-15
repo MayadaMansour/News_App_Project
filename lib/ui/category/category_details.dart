@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:news_app_project/core/model/category_model.dart';
 import 'package:news_app_project/ui/new_screen/tab_widget/tabs_widget.dart';
 
+import '../../core/model/Search.dart'; // Import the Search model
 import '../../core/model/SourcesNews.dart';
 import '../../core/network/api_manage.dart';
 import '../../utils/color_resource/color_resources.dart';
@@ -53,7 +54,13 @@ class _CategoryDetailsState extends State<CategoryDetails> {
           );
         }
         var sourcesList = snapshot.data!.sources!;
-        return TabsWidget(sourcesList: sourcesList);
+
+        Search search = Search(); // Instantiate Search object
+
+        return TabsWidget(
+          sourcesList: sourcesList,
+          search: search, // Pass the Search object
+        );
       },
     );
   }

@@ -22,9 +22,13 @@ class ApiManager {
     }
   }
 
-  static Future<NewsResponse?> getNewsBySourceId(String sourceId) async {
-    Uri url = Uri.https(ApiConstants.baseUrl, ApiConstants.articals,
-        {"apiKey": "7fee4affb2224ab8afe396526a9a24f5", "sources": sourceId});
+  static Future<NewsResponse?> getNewsBySourceId(
+      String sourceId, String value) async {
+    Uri url = Uri.https(ApiConstants.baseUrl, ApiConstants.articals, {
+      "apiKey": "7fee4affb2224ab8afe396526a9a24f5",
+      "sources": sourceId,
+      'q': '$value',
+    });
 
     try {
       var response = await http.get(url);

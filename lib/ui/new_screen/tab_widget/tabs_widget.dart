@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:news_app_project/ui/new_screen/tab_widget/tab_item.dart';
 
+import '../../../core/model/Search.dart';
 import '../../../core/model/SourcesNews.dart';
 import '../news_widget/new_widget.dart';
 
 class TabsWidget extends StatefulWidget {
-  TabsWidget({super.key, required this.sourcesList});
+  TabsWidget({super.key, required this.sourcesList, required this.search});
 
-  List<Source> sourcesList;
+  final List<Source> sourcesList;
+  final Search search;
 
   @override
   State<TabsWidget> createState() => _TabsWidgetState();
@@ -36,7 +38,10 @@ class _TabsWidgetState extends State<TabsWidget> {
                         sources: sources))
                     .toList()),
             Expanded(
-                child: NewsWidget(source: widget.sourcesList[selectedIndex]))
+                child: NewsWidget(
+              source: widget.sourcesList[selectedIndex],
+              search: widget.search,
+            ))
           ],
         ));
   }

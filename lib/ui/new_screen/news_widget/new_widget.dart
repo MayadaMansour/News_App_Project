@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app_project/core/model/NewsResponse.dart';
+import 'package:news_app_project/core/model/Search.dart';
 import 'package:news_app_project/core/model/SourcesNews.dart';
 
 import '../../../core/network/api_manage.dart';
@@ -7,9 +8,10 @@ import '../../../utils/color_resource/color_resources.dart';
 import 'new_details.dart';
 
 class NewsWidget extends StatefulWidget {
-  NewsWidget({super.key, required this.source});
+  NewsWidget({super.key, required this.source, required this.search});
 
   final Source source;
+  Search search;
 
   @override
   State<NewsWidget> createState() => _NewsWidgetState();
@@ -19,7 +21,8 @@ class _NewsWidgetState extends State<NewsWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<NewsResponse?>(
-      future: ApiManager.getNewsBySourceId(widget.source.id ?? " "),
+      future: ApiManager.getNewsBySourceId(
+          widget.source.id ?? " ", widget.search.articles?.join(',') ?? ""),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -35,7 +38,8 @@ class _NewsWidgetState extends State<NewsWidget> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    ApiManager.getNewsBySourceId(widget.source.id ?? " ");
+                    ApiManager.getNewsBySourceId(widget.source.id ?? " ",
+                        widget.search.articles?.join(',') ?? "");
                   });
                 },
                 child: const Text("Try Again"),
@@ -50,7 +54,8 @@ class _NewsWidgetState extends State<NewsWidget> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    ApiManager.getNewsBySourceId(widget.source.id ?? " ");
+                    ApiManager.getNewsBySourceId(widget.source.id ?? " ",
+                        widget.search.articles?.join(',') ?? "");
                   });
                 },
                 child: const Text("Try Again"),
